@@ -1,6 +1,6 @@
 import threading
 import time
-from flask import Flask, redirect, url_for, render_template, request, send_file
+from flask import Flask, redirect, session, url_for, render_template, request, send_file
 from docx import Document
 from datetime import datetime
 import io, os
@@ -11,20 +11,32 @@ from docx.shared import Pt
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask_login import LoginManager, login_user, login_required, current_user, UserMixin
 from docx2pdf import convert
+from oauthlib.oauth2 import TokenExpiredError
 
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default-secret-key")
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
+def token_saver(token):
+    # You can log, DB-store, or update session here
+    session['google_oauth_token'] = token
 
-# Google OAuth setup
 google_bp = make_google_blueprint(
     client_id=os.environ.get("GOOGLE_OAUTH_CLIENT_ID"),
     client_secret=os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET"),
     redirect_url="/login/google/authorized",
-    scope=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/userinfo.profile","openid"]
+    scope=[
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "openid"
+    ],
+    offline=True,
+    reprompt_consent=True    
 )
+
+# ✅ Set token_updater on the blueprint.session after it's created
+google_bp.session.token_updater = token_saver
 app.register_blueprint(google_bp, url_prefix="/login")
 
 # User class for session management
@@ -39,15 +51,25 @@ login_manager = LoginManager(app)
 def load_user(user_id):
     return User(user_id)
 
+
+
+
 # OAuth + login flow
 @app.route("/")
 def index():
     if not google.authorized:
         print("Redirecting to Google login")
+        return redirect(url_for("google.login") + "?access_type=offline&include_granted_scopes=true&prompt=select_account")
+    
+    try:
+        resp = google.get("/oauth2/v2/userinfo")
+        email = resp.json()["email"]
+    except TokenExpiredError:
+        print("Token expired—forcing re-login")
         return redirect(url_for("google.login"))
 
-    resp = google.get("/oauth2/v2/userinfo")
-    email = resp.json()["email"]
+    # resp = google.get("/oauth2/v2/userinfo")
+    # email = resp.json()["email"]
 
     # Optional domain check
     #allowed_domains = ["myschool.edu"]
