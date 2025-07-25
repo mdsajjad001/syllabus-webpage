@@ -1,0 +1,30 @@
+body {
+  font-family: "Times New Roman", serif;
+  color: black;
+  background: none;
+}
+
+form {
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+h2, h3, label {
+  color: black;
+}
+
+@page {
+  size: A4;
+  margin: 1in;
+}
+
+@media print {
+    body {
+        font-size: 12pt;
+    }
+    form {
+        display: none;
+    }
+}
