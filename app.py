@@ -5,7 +5,34 @@ import csv
 
 app = Flask(__name__)
 
+<<<<<<< HEAD
+
+# Google OAuth setup
+google_bp = make_google_blueprint(
+    client_id=os.environ.get("GOOGLE_OAUTH_CLIENT_ID"),
+    client_secret=os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET"),
+    redirect_url="/login/google/authorized",
+    scope=["https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/userinfo.profile","openid"]
+)
+app.register_blueprint(google_bp, url_prefix="/login")
+
+# User class for session management
+class User(UserMixin):
+    def __init__(self, email):
+        self.id = email
+        self.email = email
+
+login_manager = LoginManager(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
+
+# OAuth + login flow
+@app.route("/")
+=======
 @app.route('/', methods=['GET', 'POST'])
+>>>>>>> parent of 5f22cfb (updated flask code)
 def index():
     if request.method == 'POST':
         classname = request.form['class']
