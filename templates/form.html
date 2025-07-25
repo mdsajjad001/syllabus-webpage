@@ -69,9 +69,22 @@
 </head>
 <body>
 
-  <form id="classForm">
+  <form id="classForm" method="POST" action="/generate-document">
     <h2>Class Syllabus Entry</h2>
-
+    <div style="text-align:right; font-weight:bold; padding:8px 12px; border-radius:5px;
+            background-color:#e0f0ff; color:#0b3c5d; box-shadow:1px 1px 4px rgba(0,0,0,0.1);">
+        Logged in as: {{ current_user.name }} -- {{ current_user.email }}
+</div>
+    <label for="assessmentTitle">Assessment Title:</label>
+    <select id="assessmentTitle" name="assessmentTitle" required>
+      <option ></option>
+      <option value="Formative Assessment - I">Formative Assessment - I</option>
+      <option value="Formative Assessment - II">Formative Assessment - II</option>
+      <option value="Formative Assessment - III">Formative Assessment - III</option>
+      <option value="Formative Assessment - IV">Formative Assessment - IV</option>
+      <option value="Summative Assessment - I">Summative Assessment - I</option>
+      <option value="Summative Assessment - II">Summative Assessment - II</option>
+    </select>
     <label for="className">Class:</label>
     <select id="className" name="className" required>
       <option ></option>
@@ -89,6 +102,17 @@
   </form>
 
   <script>
+  function updateDay(dateInputId, dayOutputId) {
+    const dateInput = document.getElementById(dateInputId);
+    const dayOutput = document.getElementById(dayOutputId);
+
+    dateInput.addEventListener("change", function () {
+      const selectedDate = new Date(this.value);
+      const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+      dayOutput.value = dayName;
+    });
+  }
+
   const subjectMap = {
     "LKG": ["Urdu","English", "Mathematics"],
     "UKG": ["Urdu","English", "Mathematics"],
@@ -103,7 +127,7 @@
   const subjectContainer = document.getElementById("dynamicSubjects");
 
   classDropdown.addEventListener("change", function () {
-    subjectContainer.innerHTML = ""; // clear old content
+    subjectContainer.innerHTML = "";
     const subjects = subjectMap[this.value];
     
     subjects.forEach(subject => {
@@ -127,7 +151,7 @@
       updateDay(`${subject.toLowerCase()}Date`, `${subject.toLowerCase()}Day`);
     });
   });
-</script>
+  </script>
 
 </body>
 </html>
