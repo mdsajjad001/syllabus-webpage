@@ -1,43 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>School Syllabus Form</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="{{ url_for('static', filename='print-style.css') }}" media="print">
+  <title>Class Syllabus Form</title>
+  <style>
+    body {
+      font-family: "Calibri", "Segoe UI", sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+      color: #333;
+    }
+    form {
+      max-width: 800px;
+      margin: auto;
+      background-color: #fff;
+      padding: 25px;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #1a4b8b;
+      margin-bottom: 20px;
+    }
+    h3 {
+      font-size: 20px;
+      border-bottom: 1px solid #bbb;
+      padding-bottom: 5px;
+      margin-top: 30px;
+      color: #1a4b8b;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 16px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    button[type="submit"] {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #2c6ebb;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #1a4b8b;
+    }
+  </style>
 </head>
 <body>
-    <form method="POST">
-        <label>Class:</label>
-        <input type="text" name="class" required><br>
 
-        <label>Date:</label>
-        <input type="date" name="date" onchange="updateDay(this.value)" required><br>
+  <form id="classForm">
+    <h2>Class Syllabus Entry</h2>
 
-        <label>Day:</label>
-        <input type="text" name="day" readonly><br>
+    <label for="className">Class:</label>
+    <select id="className" name="className" required>
+      <option ></option>
+      <option value="LKG">LKG</option>
+      <option value="UKG">UKG</option>
+      <option value="First">I</option>
+      <option value="Second">II</option>
+      <option value="Third">III</option>
+      <option value="Fourth">IV</option>
+      <option value="Fifth">V</option>
+    </select>
+    <div id="dynamicSubjects"></div>
 
-        <div id="subjects">
-            <label>Subject 1:</label>
-            <input type="text" name="subject1"><br>
+    <button type="submit">Generate Document</button>
+  </form>
+
+  <script>
+  const subjectMap = {
+    "LKG": ["Urdu","English", "Mathematics"],
+    "UKG": ["Urdu","English", "Mathematics"],
+    "First": ["Urdu","English", "Mathematics"],
+    "Second": ["Urdu","English", "Mathematics","Telugu"],
+    "Third": ["Urdu","English", "Mathematics","Telugu"],
+    "Fourth": ["Urdu","English", "Mathematics","Telugu", "EVS"],
+    "Fifth": ["Urdu","English", "Mathematics","Telugu", "EVS"]
+  };
+
+  const classDropdown = document.getElementById("className");
+  const subjectContainer = document.getElementById("dynamicSubjects");
+
+  classDropdown.addEventListener("change", function () {
+    subjectContainer.innerHTML = ""; // clear old content
+    const subjects = subjectMap[this.value];
+    
+    subjects.forEach(subject => {
+      const subjectHtml = `
+        <div class="subject-block">
+          <h3>${subject}</h3>
+          <label>Date:</label>
+          <input type="date" id="${subject.toLowerCase()}Date" name="${subject.toLowerCase()}Date" required>
+
+          <label>Day:</label>
+          <input type="text" id="${subject.toLowerCase()}Day" name="${subject.toLowerCase()}Day" readonly>
+
+          <label>Syllabus:</label>
+          <textarea name="${subject.toLowerCase()}Syllabus" required></textarea>
         </div>
+      `;
+      subjectContainer.insertAdjacentHTML("beforeend", subjectHtml);
+    });
 
-        <button type="button" onclick="addSubject()">+ Add Subject</button>
-        <button type="submit">Generate Syllabus</button>
-    </form>
-
-<script>
-let count = 1;
-function addSubject() {
-    count++;
-    let div = document.createElement('div');
-    div.innerHTML = `<label>Subject ${count}:</label><input type="text" name="subject${count}"><br>`;
-    document.getElementById('subjects').appendChild(div);
-}
-
-function updateDay(dateString) {
-    const date = new Date(dateString);
-    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    document.querySelector('[name="day"]').value = dayNames[date.getDay()];
-}
+    subjects.forEach(subject => {
+      updateDay(`${subject.toLowerCase()}Date`, `${subject.toLowerCase()}Day`);
+    });
+  });
 </script>
+
 </body>
 </html>

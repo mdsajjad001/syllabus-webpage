@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>School Syllabus Form</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <form method="POST">
+        <label>Class:</label>
+        <input type="text" name="class" required><br>
+
+        <label>Date:</label>
+        <input type="date" name="date" onchange="updateDay(this.value)" required><br>
+
+        <label>Day:</label>
+        <input type="text" name="day" readonly><br>
+
+        <div id="subjects">
+            <label>Subject 1:</label>
+            <input type="text" name="subject1"><br>
+        </div>
+
+        <button type="button" onclick="addSubject()">+ Add Subject</button>
+        <button type="submit">Generate Syllabus</button>
+    </form>
+
+<script>
+let count = 1;
+function addSubject() {
+    count++;
+    let div = document.createElement('div');
+    div.innerHTML = `<label>Subject ${count}:</label><input type="text" name="subject${count}"><br>`;
+    document.getElementById('subjects').appendChild(div);
+}
+
+function updateDay(dateString) {
+    const date = new Date(dateString);
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    document.querySelector('[name="day"]').value = dayNames[date.getDay()];
+}
+</script>
+</body>
+</html>
