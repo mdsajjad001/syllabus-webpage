@@ -19,6 +19,11 @@
       border: 1px solid #ccc;
       box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
     }
+    h1 {
+      text-align: center;
+      color: #1a4b8b;
+      margin-bottom: 36px;
+    }
     h2 {
       text-align: center;
       color: #1a4b8b;
@@ -70,11 +75,9 @@
 <body>
 
   <form id="classForm" method="POST" action="/generate-document">
+  <h1>NOORI ABRAARI SCHOOL</h1>
     <h2>Class Syllabus Entry</h2>
-    <div style="text-align:right; font-weight:bold; padding:8px 12px; border-radius:5px;
-            background-color:#e0f0ff; color:#0b3c5d; box-shadow:1px 1px 4px rgba(0,0,0,0.1);">
-        Logged in as: {{ current_user.name }} -- {{ current_user.email }}
-</div>
+   
     <label for="assessmentTitle">Assessment Title:</label>
     <select id="assessmentTitle" name="assessmentTitle" required>
       <option ></option>
@@ -97,7 +100,6 @@
       <option value="Fifth">V</option>
     </select>
     <div id="dynamicSubjects"></div>
-
     <button type="submit">Generate Document</button>
   </form>
 

@@ -15,91 +15,96 @@ from oauthlib.oauth2 import TokenExpiredError
 
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default-secret-key")
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+# app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default-secret-key")
+# os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
-def token_saver(token):
-    # You can log, DB-store, or update session here
-    session['google_oauth_token'] = token
+# def token_saver(token):
+#     # You can log, DB-store, or update session here
+#     session['google_oauth_token'] = token
 
-google_bp = make_google_blueprint(
-    client_id=os.environ.get("GOOGLE_OAUTH_CLIENT_ID"),
-    client_secret=os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET"),
-    redirect_url="/login/google/authorized",
-    scope=[
-        "https://www.googleapis.com/auth/userinfo.email",
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "openid"
-    ],
-    offline=True,
-    reprompt_consent=True    
-)
+# google_bp = make_google_blueprint(
+#     client_id=os.environ.get("GOOGLE_OAUTH_CLIENT_ID"),
+#     client_secret=os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET"),
+#     redirect_url="/login/google/authorized",
+#     scope=[
+#         "https://www.googleapis.com/auth/userinfo.email",
+#         "https://www.googleapis.com/auth/userinfo.profile",
+#         "openid"
+#     ],
+#     offline=True,
+#     reprompt_consent=True    
+# )
 
-# ✅ Set token_updater on the blueprint.session after it's created
-google_bp.session.token_updater = token_saver
-app.register_blueprint(google_bp, url_prefix="/login")
+# # ✅ Set token_updater on the blueprint.session after it's created
+# google_bp.session.token_updater = token_saver
+# app.register_blueprint(google_bp, url_prefix="/login")
 
-# User class for session management
-class User(UserMixin):
-    def __init__(self, email):
-        self.id = email
-        self.email = email
+# # User class for session management
+# class User(UserMixin):
+#     def __init__(self, email):
+#         self.id = email
+#         self.email = email
 
-login_manager = LoginManager(app)
+# login_manager = LoginManager(app)
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User(user_id)
-
-
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User(user_id)
 
 
-# OAuth + login flow
+
+
+# # OAuth + login flow
+# @app.route("/")
+# def index():
+#     if not google.authorized:
+#         print("Redirecting to Google login")
+#         return redirect(url_for("google.login") + "?access_type=offline&include_granted_scopes=true&prompt=select_account")
+    
+#     try:
+#         resp = google.get("/oauth2/v2/userinfo")
+#         email = resp.json()["email"]
+#     except TokenExpiredError:
+#         print("Token expired—forcing re-login")
+#         return redirect(url_for("google.login"))
+
+#     # resp = google.get("/oauth2/v2/userinfo")
+#     # email = resp.json()["email"]
+
+#     # Optional domain check
+#     #allowed_domains = ["myschool.edu"]
+#     #if not any(email.endswith(f"@{domain}") for domain in allowed_domains):
+#      #   return "Unauthorized access", 403
+
+#     user = User(email)
+#     login_user(user)
+#     return redirect(url_for("syllabus_form"))
+
+# @app.route("/login/google/authorized")
+# def google_authorized():
+#     if not google.authorized:
+#         print("Google authorization failed")
+#         return redirect(url_for("index"))
+    
+#     resp = google.get("/oauth2/v2/userinfo")
+#     email = resp.json()["email"]
+
+#     user = User(email)
+#     login_user(user)
+#     return redirect(url_for("syllabus_form"))
+
 @app.route("/")
-def index():
-    if not google.authorized:
-        print("Redirecting to Google login")
-        return redirect(url_for("google.login") + "?access_type=offline&include_granted_scopes=true&prompt=select_account")
-    
-    try:
-        resp = google.get("/oauth2/v2/userinfo")
-        email = resp.json()["email"]
-    except TokenExpiredError:
-        print("Token expired—forcing re-login")
-        return redirect(url_for("google.login"))
-
-    # resp = google.get("/oauth2/v2/userinfo")
-    # email = resp.json()["email"]
-
-    # Optional domain check
-    #allowed_domains = ["myschool.edu"]
-    #if not any(email.endswith(f"@{domain}") for domain in allowed_domains):
-     #   return "Unauthorized access", 403
-
-    user = User(email)
-    login_user(user)
-    return redirect(url_for("syllabus_form"))
-
-@app.route("/login/google/authorized")
-def google_authorized():
-    if not google.authorized:
-        print("Google authorization failed")
-        return redirect(url_for("index"))
-    
-    resp = google.get("/oauth2/v2/userinfo")
-    email = resp.json()["email"]
-
-    user = User(email)
-    login_user(user)
-    return redirect(url_for("syllabus_form"))
+def show_form():
+    return render_template("form.html")
 
 # Protected route for your syllabus form
-@app.route("/generate-document", methods=["GET", "POST"])
-@login_required
+@app.route("/generate-document", methods=["POST"])
+# @app.route("/generate-document", methods=["GET", "POST"])
+# @login_required
 def syllabus_form():
     if request.method == "POST":
         form_data = request.form.to_dict()
-        form_data["submitted_by"] = current_user.email
+        # form_data["submitted_by"] = current_user.email
         # Proceed with document generation
         #return f"Form submitted by {form_data['submitted_by']}"
     
