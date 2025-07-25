@@ -43,6 +43,7 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if not google.authorized:
+        print("Redirecting to Google login")
         return redirect(url_for("google.login"))
 
     resp = google.get("/oauth2/v2/userinfo")
@@ -60,6 +61,7 @@ def index():
 @app.route("/login/google/authorized")
 def google_authorized():
     if not google.authorized:
+        print("Google authorization failed")
         return redirect(url_for("index"))
     
     resp = google.get("/oauth2/v2/userinfo")
