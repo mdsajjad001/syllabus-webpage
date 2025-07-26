@@ -227,22 +227,22 @@ def syllabus_form():
             raise FileNotFoundError(f"DOCX not saved properly to {docx_path}")
 
         # 📄 Convert to PDF
-        convert(docx_path, pdf_path)
+        # convert(docx_path, pdf_path)
 
-        if not os.path.exists(pdf_path):
-            raise FileNotFoundError(f"PDF not generated at {pdf_path}")
+        # if not os.path.exists(pdf_path):
+        #     raise FileNotFoundError(f"PDF not generated at {pdf_path}")
 
         # 💾 Serve PDF and schedule cleanup
-        with open(pdf_path, "rb") as pdf_file:
+        with open(docx_path, "rb") as pdf_file:
             response = send_file(
                 io.BytesIO(pdf_file.read()),
                 as_attachment=True,
-                download_name=f"{class_name}_Syllabus.pdf",
-                mimetype="application/pdf"
+                download_name=f"{class_name}_Syllabus.docx",
+                mimetype="application/docx"
             )
 
         delete_file_delayed(docx_path)
-        delete_file_delayed(pdf_path)
+        # delete_file_delayed(pdf_path)
 
         return response
 
