@@ -217,7 +217,7 @@ def syllabus_form():
 
         # Construct file paths
         docx_path = os.path.join(output_dir, f"{class_name}_Syllabus.docx")
-        pdf_path = os.path.join(output_dir, f"{class_name}_Syllabus.pdf")
+        # pdf_path = os.path.join(output_dir, f"{class_name}_Syllabus.pdf")
 
         # ⚙️ Save DOCX
         doc.save(docx_path)
@@ -241,10 +241,12 @@ def syllabus_form():
                 mimetype="application/docx"
             )
 
-        delete_file_delayed(docx_path)
+        # delete_file_delayed(docx_path)
         # delete_file_delayed(pdf_path)
 
-        return response
+        # response
+
+        return redirect(url_for("confirmation", filename=f"{class_name}_Syllabus.docx"))
 
         # buffer = io.BytesIO()
         # doc.save(buffer)
@@ -254,12 +256,30 @@ def syllabus_form():
         # return send_file(buffer, as_attachment=True, download_name=filename)
     return render_template("form.html")
 
-def delete_file_delayed(path, delay=5):
-    def delayed_delete():
-        time.sleep(delay)
-        if os.path.exists(path):
-            os.remove(path)
-    threading.Thread(target=delayed_delete).start()
+@app.route("/delete_file", methods=["POST"])
+def delete_file():
+    data = request.get_json()
+    filename = data.get("filename")
+    print(f"🔍 Received deletion request for: {filename}")
+    file_path = os.path.join("static","generated_docs", filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print(f"🔍 COmpleted deletion request for: {filename}")
+        return "Deleted", 200
+    print(f"🔍 File Not found: {filename}")
+    return "File not found", 404
+
+# def delete_file_delayed(path, delay=5):
+#     def delayed_delete():
+#         time.sleep(delay)
+#         if os.path.exists(path):
+#             os.remove(path)
+#     threading.Thread(target=delayed_delete).start()
+
+@app.route("/confirmation")
+def confirmation():
+    filename = request.args.get("filename")
+    return render_template("confirm.html", filename=filename)
 
 if __name__ == '__main__':
     app.run(debug=True)

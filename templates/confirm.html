@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Generated</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='print-style.css') }}" media="print">
+</head>
+<body>
+    <h2>✅ Syllabus File successfully generated!</h2>
+    <p>File saved as: <strong>{{ filename }}</strong></p>
+    <a href="{{ url_for('static', filename='generated_docs/' ~ filename) }}" target="_blank">Download Document</a>
+    <br><br>
+    <!-- <button id="submit-another">Submit Another</button> -->
+
+    <a href="{{ url_for('show_form') }}" onclick="deleteFile('{{ filename }}')">Submit Another</a>
+</body>
+<script>
+function deleteFile(filename) {
+    console.log("🗑️ Preparing to delete file:", filename);
+
+    fetch('/delete_file', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ filename })
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("✅ File deletion request sent successfully for:", filename);
+        } else {
+            console.error("❌ Server rejected deletion for:", filename);
+        }
+    })
+    .catch(error => {
+        console.error("⚠️ Error sending deletion request:", error);
+    });
+}
+
+// Trigger on page exit
+// window.addEventListener("beforeunload", () => {
+//     deleteFile("{{ filename }}");
+// });
+
+// Optional: trigger on "Submit Another" click as well
+</script>
+
+
+</html>
