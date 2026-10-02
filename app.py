@@ -1,3 +1,4 @@
+import json
 import threading
 import time
 from flask import Flask, redirect, session, url_for, render_template, request, send_file
@@ -15,6 +16,9 @@ from oauthlib.oauth2 import TokenExpiredError
 
 
 app = Flask(__name__)
+
+with open(os.path.join(os.path.dirname(__file__), "config.json")) as _f:
+    CONFIG = json.load(_f)
 # app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default-secret-key")
 # os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
@@ -95,7 +99,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def show_form():
-    return render_template("form.html")
+    return render_template("form.html", config=CONFIG)
 
 # Protected route for your syllabus form
 @app.route("/generate-document", methods=["POST"])
@@ -116,15 +120,7 @@ def syllabus_form():
         class_name = form.get('className')
         assessment = form.get('assessmentTitle').upper()
 
-        subject_map = {
-            "LKG": ["Urdu", "English", "Mathematics"],
-            "UKG": ["Urdu", "English", "Mathematics"],
-            "First": ["Urdu", "English", "Mathematics"],
-            "Second": ["Urdu", "English", "Mathematics", "Telugu"],
-            "Third": ["Urdu", "English", "Mathematics", "Telugu"],
-            "Fourth": ["Urdu", "English", "Mathematics", "Telugu", "EVS"],
-            "Fifth": ["Urdu", "English", "Mathematics", "Telugu", "EVS"]
-        }
+        subject_map = CONFIG["classes"]
 
         subjects = subject_map.get(class_name, [])
 

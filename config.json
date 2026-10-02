@@ -1,0 +1,30 @@
+{
+  "assessments": [
+    "Formative Assessment - I",
+    "Formative Assessment - II",
+    "Formative Assessment - III",
+    "Formative Assessment - IV",
+    "Summative Assessment - I",
+    "Summative Assessment - II"
+  ],
+  "classes": {
+    "LKG":   ["Urdu", "English", "Mathematics", "GK"],
+    "UKG":   ["Urdu", "English", "Mathematics", "GK"],
+    "First": ["Urdu", "English", "Mathematics", "GK"],
+    "Second":["Urdu", "English", "Mathematics", "Telugu", "GK"],
+    "Third": ["Urdu", "English", "Mathematics", "Telugu", "GK"],
+    "Fourth":["Urdu", "English", "Mathematics", "Telugu", "EVS"],
+    "Fifth": ["Urdu", "English", "Mathematics", "Telugu", "EVS"],
+    "Sixth": ["Urdu", "English", "Mathematics", "Telugu", "General Science", "Social Studies", "Hindi"]
+  },
+  "class_labels": {
+    "LKG":   "LKG",
+    "UKG":   "UKG",
+    "First": "I",
+    "Second":"II",
+    "Third": "III",
+    "Fourth":"IV",
+    "Fifth": "V",
+    "Sixth": "VI"
+  }
+}

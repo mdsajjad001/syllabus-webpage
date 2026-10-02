@@ -80,24 +80,17 @@
    
     <label for="assessmentTitle">Assessment Title:</label>
     <select id="assessmentTitle" name="assessmentTitle" required>
-      <option ></option>
-      <option value="Formative Assessment - I">Formative Assessment - I</option>
-      <option value="Formative Assessment - II">Formative Assessment - II</option>
-      <option value="Formative Assessment - III">Formative Assessment - III</option>
-      <option value="Formative Assessment - IV">Formative Assessment - IV</option>
-      <option value="Summative Assessment - I">Summative Assessment - I</option>
-      <option value="Summative Assessment - II">Summative Assessment - II</option>
+      <option></option>
+      {% for assessment in config.assessments %}
+      <option value="{{ assessment }}">{{ assessment }}</option>
+      {% endfor %}
     </select>
     <label for="className">Class:</label>
     <select id="className" name="className" required>
-      <option ></option>
-      <option value="LKG">LKG</option>
-      <option value="UKG">UKG</option>
-      <option value="First">I</option>
-      <option value="Second">II</option>
-      <option value="Third">III</option>
-      <option value="Fourth">IV</option>
-      <option value="Fifth">V</option>
+      <option></option>
+      {% for key, label in config.class_labels.items() %}
+      <option value="{{ key }}">{{ label }}</option>
+      {% endfor %}
     </select>
     <div id="dynamicSubjects"></div>
     <button type="submit">Generate Document</button>
@@ -115,15 +108,7 @@
     });
   }
 
-  const subjectMap = {
-    "LKG": ["Urdu","English", "Mathematics"],
-    "UKG": ["Urdu","English", "Mathematics"],
-    "First": ["Urdu","English", "Mathematics"],
-    "Second": ["Urdu","English", "Mathematics","Telugu"],
-    "Third": ["Urdu","English", "Mathematics","Telugu"],
-    "Fourth": ["Urdu","English", "Mathematics","Telugu", "EVS"],
-    "Fifth": ["Urdu","English", "Mathematics","Telugu", "EVS"]
-  };
+  const subjectMap = {{ config.classes | tojson }};
 
   const classDropdown = document.getElementById("className");
   const subjectContainer = document.getElementById("dynamicSubjects");
