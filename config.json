@@ -8,7 +8,8 @@
     "Summative Assessment - II"
   ],
   "classes": {
-    "LKG":   ["Urdu", "English", "Mathematics", "GK"],
+    "Nursery": ["Urdu", "English", "Mathematics"],
+    "LKG":   ["Urdu", "English", "Mathematics"],
     "UKG":   ["Urdu", "English", "Mathematics", "GK"],
     "First": ["Urdu", "English", "Mathematics", "GK"],
     "Second":["Urdu", "English", "Mathematics", "Telugu", "GK"],
