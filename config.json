@@ -19,6 +19,7 @@
     "Sixth": ["Urdu", "English", "Mathematics", "Telugu", "General Science", "Social Studies", "Hindi"]
   },
   "class_labels": {
+    "Nursery": "Nursery",
     "LKG":   "LKG",
     "UKG":   "UKG",
     "First": "I",
